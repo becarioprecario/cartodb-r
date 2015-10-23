@@ -12,9 +12,19 @@ library(httr)
 
 # Advisable to make the layer name different from your imported data, if applicable.
 
+#r2cartodb <- function(obj, layer_name, account_id, api_key) {   
 r2cartodb <- function(obj, layer_name, account_id, api_key) {   
   
-  dir <- getwd()
+  #Get account id and api key, as set by cartodb()
+  account_id <- .CartoDB$data$account.name
+  api_key <- .CartoDB$data$api.key
+
+  if(is.null(account_id) | is.null(api_key)) {
+    stop("Account ID and API key must be set using  cartodb(ID, apikey)")
+  }
+
+  current.dir <- getwd()
+  temp.dir <- tempdir()
   
   cartodb_url <- paste0("https://", 
                         account_id, 
@@ -26,7 +36,7 @@ r2cartodb <- function(obj, layer_name, account_id, api_key) {
     # Will import a basic table or a spatial table if it can detect long/lat columns.
     # The function first writes a CSV then uploads it.  
     
-    csv_name <- paste0(layer_name, ".csv")
+    csv_name <- paste0(temp.dir, "/", layer_name, ".csv")
     
     write.csv(obj, csv_name)
     
@@ -35,24 +45,24 @@ r2cartodb <- function(obj, layer_name, account_id, api_key) {
          body = list(file = upload_file(csv_name)), 
          verbose())  
     
-  } else if (grep("Spatial", class(obj)) == 1) {  
+  } else if (inherits(obj, "Spatial")) {  
     
     # Assuming here that you're using a Spatial*DataFrame, which can be written to a shapefile.  The
     # function will first write to a shapefile and then upload.  
     
     writeOGR(obj = obj, 
-             dsn = dir, 
+             dsn = temp.dir, 
              layer = layer_name, 
              driver = "ESRI Shapefile", 
              overwrite_layer = TRUE)
     
     pattern = paste0(layer_name, "\\.*")
     
-    files <- list.files(pattern = pattern)
+    files <- list.files(path = temp.dir, pattern = pattern, full.names = TRUE)
     
-    zip_name <- paste0(layer_name, ".zip")
+    zip_name <- paste0(temp.dir, "/", layer_name, ".zip")
     
-    zip(zipfile = zip_name, files = files)
+    zip(zipfile = zip_name, files = files, flags = "-D9X")
     
     POST(cartodb_url, 
          encode = "multipart", 

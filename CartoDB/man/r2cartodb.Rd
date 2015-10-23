@@ -5,11 +5,34 @@
 \alias{r2cartodb}
 \title{r2cartodb: a function to import data to your CartoDB account.}
 \usage{
-r2cartodb(obj, layer_name, account_id, api_key)
+r2cartodb(obj, layer_name)
 }
 \description{
 Set your working directory before calling the function.
 Also, the function depends on the rgdal and httr packages, and requires that you have Rtools installed
 (and that you have Rtools in your PATH if you are on Windows) if you want to upload spatial
 data frames.
+}
+\author{Kyle Walker}
+
+\examples{
+\dontrun {
+#Upload North Carolina SIDS data to CartoDB
+library(CartoDB)
+library(sp)
+library(maptools)
+library(spdep)
+library(rgdal)
+library(httr)
+
+CBDID <- "Your_CartoDB_Id"
+APIKey <- "Your_CArtoDB_API_Key"
+nc.sids <- readShapePoly(system.file("etc/shapes/sids.shp", package="spdep")[1],
+  ID="FIPSNO", proj4string=CRS("+proj=longlat +ellps=clrk66"))
+
+#Set username and API Key
+cartodb(CBDID, APIKey)
+r2cartodb(nc.sids, "nc.sids")
+}
+
 }
