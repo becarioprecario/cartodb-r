@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Introduction</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<p><a href="https://cartodb.com/">CartoDB</a>  is an open-source platform for cloud mapping.
+In this vignette we introduce the <code>CartoDB</code> package for the R software and how
+to combine both for mapping and spatial analysis.  <code>CartoDB</code> was orginially
+wirtten by Andrew Hill and here I am describing a <a href="https://github.com/becarioprecario/cartodb-r">forked version of the 
+package</a>
+that includes some other functionalities, such data, data importing, handling
+of named maps, etc.</p>
+
+<p>In this vignette you will learn:</p>
+
+<ul>
+<li>Basics about CartoDB API</li>
+<li>How to upload data to CartoDB from R</li>
+<li>&hellip;</li>
+</ul>
+
+<h2>Introduction</h2>
+
+<p>CartoDB provides limited free services through their web interface. These
+includes an easy-to-use interface to upload data and a simple map inerface to
+produce maps. All registered users can also access to CartoDB API to remotely
+connect to CartoDB map server and perform several operations.</p>
+
+<p>CartoDB provides an API Key that is required for many of the operations that we
+are going to discuss in this vignette. This API Key must be kept secreat as it
+would provide access to our maps and datasets to othe users.</p>
+
+<p>I have included my CartoDB username (<code>becarioprecario</code>) and API Key in
+variables <code>CBDID</code> and <code>APIKey</code>, respectively. They will not be defined
+anywhere in this vignette (you must do so on your own) but they will
+be used extensively in this vignette.</p>
+
+<p>Our first action is to set our credentials using the following code:</p>
+
+<pre><code class="r">library(CartoDB)
+cartodb(CBDID, APIKey)
+</code></pre>
+
+<p>Access to CartoDB API is through cURL and, for that, commands must be
+sent by accessing to specific URLs that need to be built according to our
+needs. Some of the functions in <code>CartoDB</code> will help us to create the
+queries and construct the right URLs.</p>
+
+<h2>Uploading data into CartoDB</h2>
+
+<p>Our first step now will be to upload a dataset into our CartoDB account.
+For this, we will be using the North Carolina SIDS dataset that is
+provide as a shapefile in package <code>spdep</code>. In order to load this
+shapefile into R we will load some required packages first, and then
+use function <code>readShapePoly()</code> to actually load the data:</p>
+
+<pre><code class="r">library(spdep)
+library(maptools)
+nc.sids &lt;- readShapePoly(system.file(&quot;etc/shapes/sids.shp&quot;, package=&quot;spdep&quot;)[1],
+       ID=&quot;FIPSNO&quot;, proj4string=CRS(&quot;+proj=longlat +ellps=clrk66&quot;))
+</code></pre>
+
+<p>This will create a <code>SpatialPolygonsDataFrame</code> with the boundaries of the 100
+counties in North Carolina and their associated data. The manual page of
+<code>nc.sids</code> is where the previous code has been taken from and it also provides
+more information about this dataset.</p>
+
+<p>Function <code>r2cartodb()</code> (originally written by <a href="https://rpubs.com/walkerke/r2cartodb">Kyle Walker</a>) will take a <code>Spatial*</code> object, export it to a shapefile
+and then upload it into our CartoDB account. This function will use
+the username and API Key set in call to <code>cartodb()</code>. Now, we will
+upload the data in <code>nc.sids</code> into a new database called &ldquo;nc.sids&rdquo;:</p>
+
+<pre><code class="r">r2cartodb(nc.sids, &quot;nc.sids&quot;)
+</code></pre>
+
+<p>Here, the first argument is the name of the variable in R and the second
+the name given to the data in our CartoDB account. Note that CartoDB
+will rename the dataset to &ldquo;nc_sids&rdquo;</p>
+
+<h2>Querying data from CartoDB</h2>
+
+<p>CartoDB is built on PostgreSQL and its developers praise to provide a
+flexible and fast way of querying data. We will see now how to get data
+from our newly updated data. In particular, we will use Transylvania county
+(yes, there is a Transylvania in North Carolina but not the one you are
+thinking of at the moment!!). We will build a simple query to select all
+the columns in our data for Transylvania county:</p>
+
+<pre><code class="r">trans.data &lt;- cartodb.df(&quot;SELECT * FROM nc_sids WHERE name = &#39;Transylvania&#39;&quot;)
+trans.data
+</code></pre>
+
+<pre><code>##   cartodb_id
+## 1         88
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               the_geom
+## 1 0106000020E61000000100000001030000000100000016000000FEFFFFFFCFB854C0FFFFFF5F16874140FFFFFF3F77C054C0FFFFFF1F19834140FFFFFF7FCEC254C0FFFFFFFF20854140FEFFFF5F55C354C0FFFFFFFF1F884140FFFFFF5FDABE54C0FFFFFF1F52904140FEFFFFBF65BF54C0FFFFFF1F3F944140FEFFFF3FA3BE54C0FFFFFFFFC5974140FEFFFF9F51BB54C0FEFFFFFF2B9D4140FFFFFFBFD2BA54C0FEFFFFDF37A54140FEFFFFBF53B554C0FFFFFF9F64A84140FFFFFFDF9BAF54C0FFFFFF1F82B54140FEFFFF1FEBA654C0FFFFFF1F83A54140FFFFFF3F14A754C0FFFFFFFF3FA24140FFFFFFBF28A654C0FFFFFF1F099F4140FFFFFFDFB5A554C0FFFFFF5FAC974140FFFFFF5F7BA454C0FFFFFF7F22934140FEFFFF3FE3A954C0FFFFFF5F4A8F4140FFFFFF3FE8AB54C0FFFFFF1F8C8F4140FFFFFFBF08AC54C0FFFFFFBF848C4140FEFFFF7FA1AC54C0FFFFFF7FAD8B4140FFFFFFBF5DB154C0FFFFFF1FEF8A4140FEFFFFFFCFB854C0FFFFFF5F16874140
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   the_geom_webmercator
+## 1 0106000020110F00000100000001030000000100000016000000457C2001619961C1FBC2462648D34F415FA7FCFEE09F61C1BF6F337201CB4F412E1573F0DDA161C116AF14E337CF4F413B3E177D50A261C1AE0E345A6FD54F41EE455757829E61C151FDBE2173E64F41AD4960B6F89E61C1ACEE57C29AEE4F41E3CE0386539E61C1F5E464EBEEF54F4123A0CCEF819B61C11B52A1F693005041A96D862E169B61C19A068576F2085041C0A758376B9661C183206C45400C5041E0DC5AF28F9161C1F421C616E9195041A64A40772E8A61C18F2749C3400950413152AF64518A61C14CB530EADB055041B8471162898961C197962714840250411807D8D1278961C1C00492A9B9F54F41B819FAB61C8861C1BFB1CD714BEC4F41DF424C0AB48C61C1BF9DC5634FE44F419DA1E4206B8E61C1D4F948EED7E44F414F5B12BB868E61C1581353F28DDE4F414C771C76088F61C144DDE815CFDC4F41B6D292060E9361C1C85133E543DB4F41457C2001619961C1FBC2462648D34F41
+##    fips         name        names sp_id nwbir79 sid79 bir79 nwbir74 sid74
+## 1 37175 Transylvania Transylvania 37175     104     4  1401      92     3
+##   bir74 cress_id fipsno cnty_ perimeter  area m_id l_id north east cnty_id
+## 1  1173       88  37175  2067     1.389 0.098    1    3    97   93    2067
+</code></pre>
+
+<p>CartoDB will return all the columns ir our original dataset plus some other
+that have been added to define the geometry of the spatial data.
+This will become clear once we have inspected the names:</p>
+
+<pre><code class="r">names(trans.data)
+</code></pre>
+
+<pre><code>##  [1] &quot;cartodb_id&quot;           &quot;the_geom&quot;             &quot;the_geom_webmercator&quot;
+##  [4] &quot;fips&quot;                 &quot;name&quot;                 &quot;names&quot;               
+##  [7] &quot;sp_id&quot;                &quot;nwbir79&quot;              &quot;sid79&quot;               
+## [10] &quot;bir79&quot;                &quot;nwbir74&quot;              &quot;sid74&quot;               
+## [13] &quot;bir74&quot;                &quot;cress_id&quot;             &quot;fipsno&quot;              
+## [16] &quot;cnty_&quot;                &quot;perimeter&quot;            &quot;area&quot;                
+## [19] &quot;m_id&quot;                 &quot;l_id&quot;                 &quot;north&quot;               
+## [22] &quot;east&quot;                 &quot;cnty_id&quot;
+</code></pre>
+
+<p>More complex queries can be build and send to the CartoDB server through its 
+API.</p>
+
+<h2>Spatial analysis of the data</h2>
+
+<p>The North Carolina SIDS data has already been analysed in multitude of research
+papers and has appeared in numerous worked examples in many books.  Shortly,
+this dataset includes the cases of Sudden Infant Syndrome in children in the
+100 counties in North Carolina in two time periods: 1974-1978 and 1979-1984.
+In addition to the counts of cases, the number of births per county (i.e.,
+population at risk) and the number of non-white births (a possible confounder
+or risk factor) are also available.</p>
+
+<p>As a first step in the analysis, we may consider how many cases per birth we
+have in North Carolina in each time period. This can be computed by dividing
+the total number of cases by the total number of births, for a given period.
+We will focus on the first time period. Using CartoDB API this can
+be computed as:</p>
+
+<pre><code class="r">sql.qr &lt;- &quot;SELECT sum(bir74) as x from nc_sids&quot;
+tot.births74 &lt;- cartodb.df(sql.qr)
+tot.births74$x
+</code></pre>
+
+<pre><code>## [1] 329962
+</code></pre>
+
+<p>Similarly, the total number of cases can be computed:</p>
+
+<pre><code class="r">sql.qr &lt;- &quot;SELECT sum(sid74) as x from nc_sids&quot;
+tot.sids74 &lt;- cartodb.df(sql.qr)
+tot.sids74$x
+</code></pre>
+
+<pre><code>## [1] 667
+</code></pre>
+
+<p>Finally, the global incidence rate for the first period can be computed as</p>
+
+<pre><code class="r">rate74 &lt;- tot.sids74$x / tot.births74$x
+rate74
+</code></pre>
+
+<pre><code>## [1] 0.002021445
+</code></pre>
+
+<p>Note that this requires sending queries and data back and forth between
+R and CartoDB. A more ellegant solution is to compute the rate directly
+on the server using a SQL query:</p>
+
+<pre><code class="r">sql.qr &lt;- &quot;SELECT sum(sid74)/sum(bir74) as x from nc_sids&quot;
+rate74.sql &lt;- cartodb.df(sql.qr)
+rate74.sql$x
+</code></pre>
+
+<pre><code>## [1] 0.002021445
+</code></pre>
+
+<p>In this case it really does not matter how we compute this rate. For large
+datasets, however, it may be a good idea to make computations on the server.</p>
+
+<p>The rate is better understood when it is multiplied by, for example, 1000,
+because it shows the expected number of SIDS cases pero 1000 births:</p>
+
+<pre><code class="r">1000 * rate74.sql$x
+</code></pre>
+
+<pre><code>## [1] 2.021445
+</code></pre>
+
+<p>This global rate will give as an indicator on the prevalence of the disease.
+This can be used as a threshold to compare the county rates to. If a county
+rate is higher than the global rate, then incidence in this county is higher
+than average. Computing this county rates is also something that
+can be done with a SQl query to CartoDB:</p>
+
+<pre><code class="r">sql.qr &lt;- &quot;SELECT sid74/bir74 from nc_sids&quot;
+county.rates &lt;- cartodb.df(sql.qr)
+summary(unlist(county.rates))
+</code></pre>
+
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## 0.000000 0.001084 0.001855 0.002046 0.002604 0.009554
+</code></pre>
+
+<p>Another baseline indicator that can be computed for each county is the
+&#39;expected number of cases&#39;, which measures how many cases would appear in a
+county if the incidence is exactly the same as in the global rate.  This can be
+obtained by multipliying the global rate to the county number of births.
+The advantage of this expected counts over the previous rates is that this
+can be directly compared to the pbserved number of cases to assess
+the prevalence of the disease.</p>
+
+<p>Furthermore, the Standardised Mortality Ratio (SMR) is defined as the observed
+counts divided by the expected counts. A SMR value of 1 indicates that a
+county has the same observed and expected counts, i.e., the prevalence
+of the disease is the same as in the whole study area. A SMR higher than one
+indicates an increased prevalen, whilst a SMR lower than 1 occurs when
+the prevalence is low (as compared to the hole study region).</p>
+
+<p>In CartoDB, this expected counts can be computed using a SQl query as
+follows:</p>
+
+<pre><code class="r">sql.qr &lt;- &quot;SELECT nc_sids.bir74 * rate.rate74 FROM nc_sids, (SELECT sum(sid74)/sum(bir74) as rate74 FROM nc_sids) rate&quot;
+exp.cases74 &lt;- cartodb.df(sql.qr)
+summary(unlist(exp.cases74))
+</code></pre>
+
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.5013  2.1770  4.4080  6.6700  7.9560 43.6400
+</code></pre>
+
+<p>Given that our aim is to compute the SMR for each county, the expected
+counts can be computed and aded as a new column to the table instead
+of sending them back to R.</p>
+
+</body>
+
+</html>

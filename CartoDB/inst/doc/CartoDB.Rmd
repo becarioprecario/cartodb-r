@@ -1,0 +1,214 @@
+---
+title: "CartoDB: Using CartoDB maping tools with R"
+author: "Virgilio Gómez-Rubio"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+[CartoDB](https://cartodb.com/)  is an open-source platform for cloud mapping.
+In this vignette we introduce the `CartoDB` package for the R software and how
+to combine both for mapping and spatial analysis.  `CartoDB` was orginially
+wirtten by Andrew Hill and here I am describing a [forked version of the 
+package](https://github.com/becarioprecario/cartodb-r)
+that includes some other functionalities, such data, data importing, handling
+of named maps, etc.
+
+In this vignette you will learn:
+
+- Basics about CartoDB API
+- How to upload data to CartoDB from R
+- ...
+
+## Introduction
+
+CartoDB provides limited free services through their web interface. These
+includes an easy-to-use interface to upload data and a simple map inerface to
+produce maps. All registered users can also access to CartoDB API to remotely
+connect to CartoDB map server and perform several operations.
+
+CartoDB provides an API Key that is required for many of the operations that we
+are going to discuss in this vignette. This API Key must be kept secreat as it
+would provide access to our maps and datasets to othe users.
+
+
+I have included my CartoDB username (`becarioprecario`) and API Key in
+variables `CBDID` and `APIKey`, respectively. They will not be defined
+anywhere in this vignette (you must do so on your own) but they will
+be used extensively in this vignette.
+
+```{r, echo = FALSE}
+  load("CartoDB_cred.RData")
+```
+
+Our first action is to set our credentials using the following code:
+
+```{r, results = 'hide'}
+library(CartoDB)
+cartodb(CBDID, APIKey)
+```
+
+Access to CartoDB API is through cURL and, for that, commands must be
+sent by accessing to specific URLs that need to be built according to our
+needs. Some of the functions in `CartoDB` will help us to create the
+queries and construct the right URLs.
+
+## Uploading data into CartoDB
+
+Our first step now will be to upload a dataset into our CartoDB account.
+For this, we will be using the North Carolina SIDS dataset that is
+provide as a shapefile in package `spdep`. In order to load this
+shapefile into R we will load some required packages first, and then
+use function `readShapePoly()` to actually load the data:
+
+```{r, results = 'hide'}
+library(spdep)
+library(maptools)
+nc.sids <- readShapePoly(system.file("etc/shapes/sids.shp", package="spdep")[1],
+       ID="FIPSNO", proj4string=CRS("+proj=longlat +ellps=clrk66"))
+```
+
+This will create a `SpatialPolygonsDataFrame` with the boundaries of the 100
+counties in North Carolina and their associated data. The manual page of
+`nc.sids` is where the previous code has been taken from and it also provides
+more information about this dataset.
+
+Function `r2cartodb()` (originally written by [Kyle Walker](https://rpubs.com/walkerke/r2cartodb)) will take a `Spatial*` object, export it to a shapefile
+and then upload it into our CartoDB account. This function will use
+the username and API Key set in call to `cartodb()`. Now, we will
+upload the data in `nc.sids` into a new database called "nc.sids":
+
+```{r, eval = FALSE}
+r2cartodb(nc.sids, "nc.sids")
+```
+
+Here, the first argument is the name of the variable in R and the second
+the name given to the data in our CartoDB account. Note that CartoDB
+will rename the dataset to "nc_sids"
+
+## Querying data from CartoDB
+
+CartoDB is built on PostgreSQL and its developers praise to provide a
+flexible and fast way of querying data. We will see now how to get data
+from our newly updated data. In particular, we will use Transylvania county
+(yes, there is a Transylvania in North Carolina but not the one you are
+thinking of at the moment!!). We will build a simple query to select all
+the columns in our data for Transylvania county:
+
+
+```{r}
+trans.data <- cartodb.df("SELECT * FROM nc_sids WHERE name = 'Transylvania'")
+trans.data
+```
+
+CartoDB will return all the columns ir our original dataset plus some other
+that have been added to define the geometry of the spatial data.
+This will become clear once we have inspected the names:
+
+```{r}
+names(trans.data)
+```
+
+More complex queries can be build and send to the CartoDB server through its 
+API.
+
+## Spatial analysis of the data
+
+The North Carolina SIDS data has already been analysed in multitude of research
+papers and has appeared in numerous worked examples in many books.  Shortly,
+this dataset includes the cases of Sudden Infant Syndrome in children in the
+100 counties in North Carolina in two time periods: 1974-1978 and 1979-1984.
+In addition to the counts of cases, the number of births per county (i.e.,
+population at risk) and the number of non-white births (a possible confounder
+or risk factor) are also available.
+
+As a first step in the analysis, we may consider how many cases per birth we
+have in North Carolina in each time period. This can be computed by dividing
+the total number of cases by the total number of births, for a given period.
+We will focus on the first time period. Using CartoDB API this can
+be computed as:
+
+```{r}
+sql.qr <- "SELECT sum(bir74) as x from nc_sids"
+tot.births74 <- cartodb.df(sql.qr)
+tot.births74$x
+```
+
+Similarly, the total number of cases can be computed:
+
+```{r}
+sql.qr <- "SELECT sum(sid74) as x from nc_sids"
+tot.sids74 <- cartodb.df(sql.qr)
+tot.sids74$x
+```
+
+Finally, the global incidence rate for the first period can be computed as
+
+```{r}
+rate74 <- tot.sids74$x / tot.births74$x
+rate74
+```
+
+Note that this requires sending queries and data back and forth between
+R and CartoDB. A more ellegant solution is to compute the rate directly
+on the server using a SQL query:
+
+```{r}
+sql.qr <- "SELECT sum(sid74)/sum(bir74) as x from nc_sids"
+rate74.sql <- cartodb.df(sql.qr)
+rate74.sql$x
+```
+
+In this case it really does not matter how we compute this rate. For large
+datasets, however, it may be a good idea to make computations on the server.
+
+The rate is better understood when it is multiplied by, for example, 1000,
+because it shows the expected number of SIDS cases pero 1000 births:
+
+```{r}
+1000 * rate74.sql$x
+```
+
+This global rate will give as an indicator on the prevalence of the disease.
+This can be used as a threshold to compare the county rates to. If a county
+rate is higher than the global rate, then incidence in this county is higher
+than average. Computing this county rates is also something that
+can be done with a SQl query to CartoDB:
+
+```{r}
+sql.qr <- "SELECT sid74/bir74 from nc_sids"
+county.rates <- cartodb.df(sql.qr)
+summary(unlist(county.rates))
+```
+
+Another baseline indicator that can be computed for each county is the
+'expected number of cases', which measures how many cases would appear in a
+county if the incidence is exactly the same as in the global rate.  This can be
+obtained by multipliying the global rate to the county number of births.
+The advantage of this expected counts over the previous rates is that this
+can be directly compared to the pbserved number of cases to assess
+the prevalence of the disease.
+
+Furthermore, the Standardised Mortality Ratio (SMR) is defined as the observed
+counts divided by the expected counts. A SMR value of 1 indicates that a
+county has the same observed and expected counts, i.e., the prevalence
+of the disease is the same as in the whole study area. A SMR higher than one
+indicates an increased prevalen, whilst a SMR lower than 1 occurs when
+the prevalence is low (as compared to the hole study region).
+
+In CartoDB, this expected counts can be computed using a SQl query as
+follows:
+
+```{r}
+sql.qr <- "SELECT nc_sids.bir74 * rate.rate74 FROM nc_sids, (SELECT sum(sid74)/sum(bir74) as rate74 FROM nc_sids) rate"
+exp.cases74 <- cartodb.df(sql.qr)
+summary(unlist(exp.cases74))
+```
+
+Given that our aim is to compute the SMR for each county, the expected
+counts can be computed and aded as a new column to the table instead
+of sending them back to R.
+
