@@ -53,3 +53,8 @@ sql.qr <- "SELECT nc_sids.bir74 * rate.rate74 FROM nc_sids, (SELECT sum(sid74)/s
 exp.cases74 <- cartodb.df(sql.qr)
 summary(unlist(exp.cases74))
 
+## ------------------------------------------------------------------------
+sql.qr <- "SELECT nc_sids.name, nc_sids.bir74 * rate.rate74 as exp74 FROM nc_sids, (SELECT sum(sid74)/sum(bir74) as rate74 FROM nc_sids) rate"
+data.sql <- data.frame(cartodb.df(sql.qr))
+data.sql[1:5, ]
+

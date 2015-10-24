@@ -30,7 +30,7 @@ cartodb.named.delete <- function(named.maps = c()) {
     return()
   }
 
-  res <- lapply(named.map, function(n.map) {
+  res <- lapply(named.maps, function(n.map) {
     url <- paste0("https://", account_id, ".cartodb.com/api/v1/map/named/", n.map, "?api_key=", api_key)
     httpDELETE(url)
   })

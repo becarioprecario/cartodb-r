@@ -12,4 +12,7 @@ export('cartodb.maps.link')
 export('cartodb.sql.base')
 export('cartodb.sql.fromParams')
 export('cartodb.spatial.dm')
+
 export("r2cartodb")
+export("cartodb.named.list")
+export("cartodb.named.delete")

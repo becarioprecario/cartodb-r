@@ -430,8 +430,32 @@ summary(unlist(exp.cases74))
 </code></pre>
 
 <p>Given that our aim is to compute the SMR for each county, the expected
-counts can be computed and aded as a new column to the table instead
+counts can be computed and added as a new column to the table instead
 of sending them back to R.</p>
+
+<p>In order to make the new query we need to:</p>
+
+<ul>
+<li>Compute the expected number of cases</li>
+<li>Keep an id for each county (for example, using its name)</li>
+<li>Insert the new values into the table, in a new column, so that new values are matched by their ids</li>
+</ul>
+
+<p>We will be using column <code>name</code> as the main id for each county. The following
+query will simply return the expected counts and the area name:</p>
+
+<pre><code class="r">sql.qr &lt;- &quot;SELECT nc_sids.name, nc_sids.bir74 * rate.rate74 as exp74 FROM nc_sids, (SELECT sum(sid74)/sum(bir74) as rate74 FROM nc_sids) rate&quot;
+data.sql &lt;- data.frame(cartodb.df(sql.qr))
+data.sql[1:5, ]
+</code></pre>
+
+<pre><code>##       name    exp74
+## 1  Forsyth 23.97029
+## 2   Onslow 22.55528
+## 3 Guilford 32.71506
+## 4  Iredell  8.36676
+## 5 Alamance 9.444191
+</code></pre>
 
 </body>
 
