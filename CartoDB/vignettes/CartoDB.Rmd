@@ -51,6 +51,11 @@ library(CartoDB)
 cartodb(CBDID, APIKey)
 ```
 
+```{r, echo = FALSE}
+#Delete nc_sids table
+cartodb.df("DROP TABLE nc_sids")
+```
+
 Access to CartoDB API is through cURL and, for that, commands must be
 sent by accessing to specific URLs that need to be built according to our
 needs. Some of the functions in `CartoDB` will help us to create the
@@ -81,7 +86,8 @@ and then upload it into our CartoDB account. This function will use
 the username and API Key set in call to `cartodb()`. Now, we will
 upload the data in `nc.sids` into a new database called "nc.sids":
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
+library(rgdal)
 r2cartodb(nc.sids, "nc.sids")
 ```
 
@@ -217,12 +223,40 @@ In order to make the new query we need to:
 - Keep an id for each county (for example, using its name)
 - Insert the new values into the table, in a new column, so that new values are matched by their ids
 
-We will be using column `name` as the main id for each county. The following
-query will simply return the expected counts and the area name:
+We will be using column `cartodb_id` as the main id for each county. The
+following query will simply return the expected counts and the area name:
 
 
 ```{r}
-sql.qr <- "SELECT nc_sids.name, nc_sids.bir74 * rate.rate74 as exp74 FROM nc_sids, (SELECT sum(sid74)/sum(bir74) as rate74 FROM nc_sids) rate"
+sql.qr <- "SELECT nc_sids.cartodb_id, nc_sids.bir74 * rate.rate74 as exp74 FROM nc_sids, (SELECT sum(sid74)/sum(bir74) as rate74 FROM nc_sids) rate"
 data.sql <- data.frame(cartodb.df(sql.qr))
 data.sql[1:5, ]
 ```
+
+The first step here is to add a new column to `nc_sids`:
+
+```{r, eval = TRUE}
+sql.qr <- "ALTER TABLE nc_sids ADD COLUMN exp74 numeric"
+res <- cartodb.df(sql.qr)
+```
+
+The values of this new column are updated with the computed SMR's:
+
+```{r}
+sql.qr <- "UPDATE nc_sids SET exp74 = tab.exp74 FROM (SELECT nc_sids.cartodb_id, nc_sids.bir74 * rate.rate74 as exp74 FROM nc_sids, (SELECT sum(sid74)/sum(bir74) as rate74 FROM nc_sids) rate) tab WHERE nc_sids.cartodb_id = tab.cartodb_id"
+
+res <- cartodb.df(sql.qr)
+```
+Now that the we have the observed and expected counts in the table, the
+SMR's can be computed. As before, we will be using SQL queries to keep
+all computations in the CartoDB server:
+
+```{r}
+cartodb.df("ALTER TABLE nc_sids ADD COLUMN smr74 numeric")
+
+sql.qr <- "UPDATE nc_sids SET smr74 = tab.smr74 FROM (SELECT cartodb_id, sid74/exp74 as smr74 FROM nc_sids) tab WHERE nc_sids.cartodb_id = tab.cartodb_id"
+cartodb.df(sql.qr)
+```
+
+
+
