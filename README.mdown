@@ -5,7 +5,7 @@ below). I have included a few more functions and some examples.
 
 To install you will need to install package <a>devtools</a> first, and then run:
 
-`> install_github("becarioprecario/cartodb-r/CartoDB", dep = TRUE)
+`> install_github("becarioprecario/cartodb-r/CartoDB", dep = TRUE)`
 
 
 Virgilio Gómez-Rubio (e-mail: Virgilio.Gomez@uclm.es)
