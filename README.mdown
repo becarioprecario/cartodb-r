@@ -1,3 +1,10 @@
+## IMPORTANT
+
+This is a fork of the CArtoDB package originnaly created by Andrew Hill (see
+below). I have included a few more functions and some examples.
+
+(Virgilio Gómez-Rubio)[mailto:Virgilio.Gomez@uclm.es]
+
 ## This package provides an R wrapper to the cartodb.com APIs.
 
 For more information on the these APIs see http://developers.cartodb.com/
