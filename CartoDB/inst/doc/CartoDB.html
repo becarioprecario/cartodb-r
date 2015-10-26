@@ -276,13 +276,6 @@ upload the data in <code>nc.sids</code> into a new database called &ldquo;nc.sid
 r2cartodb(nc.sids, &quot;nc.sids&quot;)
 </code></pre>
 
-<pre><code>## Response [https://becarioprecario.cartodb.com/api/v1/imports/?api_key=9c019168c8ef64008987c5ec0a94ccd218ffd7e9]
-##   Date: 2015-10-26 22:02
-##   Status: 200
-##   Content-Type: application/json; charset=utf-8
-##   Size: 71 B
-</code></pre>
-
 <p>Here, the first argument is the name of the variable in R and the second
 the name given to the data in our CartoDB account. Note that CartoDB
 will rename the dataset to &ldquo;nc_sids&rdquo;</p>
@@ -456,12 +449,12 @@ data.sql &lt;- data.frame(cartodb.df(sql.qr))
 data.sql[1:5, ]
 </code></pre>
 
-<pre><code>##   cartodb_id    exp74
-## 1         76 9.007558
-## 2         57 1.611092
-## 3         47 3.020039
-## 4         85 3.258569
-## 5          1 9.444191
+<pre><code>##   cartodb_id     exp74
+## 1         34 23.970294
+## 2         67 22.555282
+## 3         41 32.715064
+## 4         49  8.366760
+## 5          1  9.444191
 </code></pre>
 
 <p>The first step here is to add a new column to <code>nc_sids</code>:</p>

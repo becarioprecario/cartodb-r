@@ -15,7 +15,7 @@ library(maptools)
 nc.sids <- readShapePoly(system.file("etc/shapes/sids.shp", package="spdep")[1],
        ID="FIPSNO", proj4string=CRS("+proj=longlat +ellps=clrk66"))
 
-## ---- eval = TRUE--------------------------------------------------------
+## ---- eval = TRUE, results = "hide"--------------------------------------
 library(rgdal)
 r2cartodb(nc.sids, "nc.sids")
 

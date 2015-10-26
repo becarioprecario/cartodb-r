@@ -86,7 +86,7 @@ and then upload it into our CartoDB account. This function will use
 the username and API Key set in call to `cartodb()`. Now, we will
 upload the data in `nc.sids` into a new database called "nc.sids":
 
-```{r, eval = TRUE}
+```{r, eval = TRUE, results = "hide"}
 library(rgdal)
 r2cartodb(nc.sids, "nc.sids")
 ```
