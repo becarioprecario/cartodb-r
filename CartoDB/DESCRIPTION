@@ -5,7 +5,7 @@ Version: 1.4
 Date: 2012-05-22
 Author: Andrew Hill, Virgilio Gómez-Rubio
 Maintainer: Andrew Hill <andrew@vizzuality.com>
-Depends: RCurl, RJSONIO
+Depends: RCurl, RJSONIO, httr
 Suggests: png, rgdal,
     knitr
 Description: Allows you to quickly and easily use data hosted on your CartoDB account through R.

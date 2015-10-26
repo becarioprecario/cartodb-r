@@ -75,6 +75,6 @@ res <- cartodb.df(sql.qr)
 ## ------------------------------------------------------------------------
 cartodb.df("ALTER TABLE nc_sids ADD COLUMN smr74 numeric")
 
-sql.qr <- "UPDATE nc_sids SET smr74 = tab.smr74 FROM (SELECT cartodb_id, bir74/exp74 as smr74 FROM nc_sids) tab WHERE nc_sids.cartodb_id = tab.cartodb_id"
+sql.qr <- "UPDATE nc_sids SET smr74 = tab.smr74 FROM (SELECT cartodb_id, sid74/exp74 as smr74 FROM nc_sids) tab WHERE nc_sids.cartodb_id = tab.cartodb_id"
 cartodb.df(sql.qr)
 
