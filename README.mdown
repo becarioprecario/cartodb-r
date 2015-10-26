@@ -1,9 +1,14 @@
 ## IMPORTANT
 
-This is a fork of the CArtoDB package originnaly created by Andrew Hill (see
+This is a fork of the CartoDB package originnaly created by Andrew Hill (see
 below). I have included a few more functions and some examples.
 
-(Virgilio Gómez-Rubio)[mailto:Virgilio.Gomez@uclm.es]
+To install you will need to install package <a>devtools</a> first, and then run:
+
+`> install_github("becarioprecario/cartodb-r/CartoDB", dep = TRUE)
+
+
+Virgilio Gómez-Rubio (e-mail: Virgilio.Gomez@uclm.es)
 
 ## This package provides an R wrapper to the cartodb.com APIs.
 
