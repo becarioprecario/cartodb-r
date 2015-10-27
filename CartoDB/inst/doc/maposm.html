@@ -1,0 +1,4322 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Mapping OSM data from CartoDB</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h2>Mapping OSM data from CartoDB</h2>
+
+<p><img src="http://i.imgur.com/CuOT3.png" width="900px"/></p>
+
+<pre><code class="r">library(rgdal)
+library(maptools)
+library(RCurl)
+library(RJSONIO)
+library(CartoDB)
+
+# Setup our CartoDB Connection
+cartodb_account_name = &quot;viz2&quot;; 
+cartodb(cartodb_account_name)
+</code></pre>
+
+<pre><code>## Warning in cartodb(cartodb_account_name): Without an API key you are
+## limited to read-only
+</code></pre>
+
+<pre><code class="r"># CartoDB the_geom columns are always the following proj string
+crs &lt;- &quot;+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&quot;
+
+# Get OSM polygons for Riyadh
+polyUrl &lt;- cartodb.collection(&quot;riyadh_osm_polygon&quot;, columns=c(&quot;cartodb_id&quot;,&quot;the_geom&quot;), omitNull=TRUE,method=&quot;GeoJSON&quot;, urlOnly=TRUE)
+riyadh.poly&lt;-readOGR(polyUrl,p4s=crs,layer = &#39;OGRGeoJSON&#39;)
+</code></pre>
+
+<pre><code>## OGR data source with driver: GeoJSON 
+## Source: &quot;http://viz2.cartodb.com/api/v2/sql?api_key=&amp;format=geojson&amp;q=SELECT%20cartodb_id,the_geom%20FROM%20riyadh_osm_polygon%20WHERE%20the_geom%20IS%20NOT%20NULL&quot;, layer: &quot;OGRGeoJSON&quot;
+## with 1009 features
+## It has 1 fields
+</code></pre>
+
+<pre><code>## Warning in readOGR(polyUrl, p4s = crs, layer = &quot;OGRGeoJSON&quot;): p4s= argument given as: +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs
+##  and read as: +proj=longlat +datum=WGS84 +no_defs 
+##  read string overridden by given p4s= argument value
+</code></pre>
+
+<pre><code class="r"># Get OSM roads for Riyadh
+roadUrl &lt;- cartodb.collection(&quot;riyadh_osm_roads&quot;, columns=c(&quot;cartodb_id&quot;,&quot;the_geom&quot;), omitNull=TRUE,method=&quot;GeoJSON&quot;, urlOnly=TRUE)
+riyadh.roads&lt;-readOGR(roadUrl,p4s=crs,layer = &#39;OGRGeoJSON&#39;)
+</code></pre>
+
+<pre><code>## OGR data source with driver: GeoJSON 
+## Source: &quot;http://viz2.cartodb.com/api/v2/sql?api_key=&amp;format=geojson&amp;q=SELECT%20cartodb_id,the_geom%20FROM%20riyadh_osm_roads%20WHERE%20the_geom%20IS%20NOT%20NULL&quot;, layer: &quot;OGRGeoJSON&quot;
+## with 1973 features
+## It has 1 fields
+</code></pre>
+
+<pre><code>## Warning in readOGR(roadUrl, p4s = crs, layer = &quot;OGRGeoJSON&quot;): p4s= argument given as: +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs
+##  and read as: +proj=longlat +datum=WGS84 +no_defs 
+##  read string overridden by given p4s= argument value
+</code></pre>
+
+<pre><code class="r"># Get OSM railways for Riyadh
+railUrl &lt;- cartodb.collection(sql=&quot;SELECT cartodb_id, the_geom FROM riyadh_osm_line WHERE railway IS NOT NULL&quot;,method=&quot;GeoJSON&quot;,urlOnly=TRUE)
+riyadh.rails&lt;-readOGR(railUrl,p4s=crs,layer = &#39;OGRGeoJSON&#39;)
+</code></pre>
+
+<pre><code>## OGR data source with driver: GeoJSON 
+## Source: &quot;http://viz2.cartodb.com/api/v2/sql?api_key=&amp;format=geojson&amp;q=SELECT%20cartodb_id,%20the_geom%20FROM%20riyadh_osm_line%20WHERE%20railway%20IS%20NOT%20NULL&quot;, layer: &quot;OGRGeoJSON&quot;
+## with 31 features
+## It has 1 fields
+</code></pre>
+
+<pre><code>## Warning in readOGR(railUrl, p4s = crs, layer = &quot;OGRGeoJSON&quot;): p4s= argument given as: +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs
+##  and read as: +proj=longlat +datum=WGS84 +no_defs 
+##  read string overridden by given p4s= argument value
+</code></pre>
+
+<pre><code class="r"># Plot the polygons and roads on a small map
+plot(riyadh.poly,axes=TRUE, border=&quot;gray&quot;,col=&quot;#A2CD5A&quot;,bg=&quot;white&quot;)
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code>## Warning in polypath(x = mcrds[, 1], y = mcrds[, 2], border = border, col =
+## col, : Path drawing not available for this device
+</code></pre>
+
+<pre><code class="r">lines(riyadh.roads, col=&quot;#3a3a3a&quot;, lwd=1)
+lines(riyadh.rails, col=&quot;burlywood3&quot;, lwd=3)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-2"/> </p>
+
+</body>
+
+</html>
